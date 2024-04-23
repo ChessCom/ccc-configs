@@ -1,0 +1,1 @@
+This repository hosts build scripts and configuration files for engines at CCC. The primary purpose is to give full transparency to engine authors over how their engines are built, and how they are used. These docker files will only allow you to build public engines. Private engines require secrets to be passed at build time, which are obviously not included here.
