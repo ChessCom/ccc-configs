@@ -27,12 +27,12 @@ ENV PATH="/root/.cargo/bin:$PATH"
 # ------------------------------------------------------------------------------
 
 # Force the cache to break if there have been new commits
-ADD https://api.github.com/repos/dsekercioglu/blackmarlin/git/refs/heads/main /.git-hashref
+ADD https://api.github.com/repos/jnlt3/blackmarlin/git/refs/heads/main /.git-hashref
 
 # ------------------------------------------------------------------------------
 
 # Clone and build from master
-RUN git clone https://github.com/dsekercioglu/blackmarlin && \
+RUN git clone https://github.com/jnlt3/blackmarlin && \
     cd blackmarlin && \
     git checkout main && \
     git pull && \
