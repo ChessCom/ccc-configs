@@ -32,7 +32,7 @@ def build_command(engine):
     for secret in gather_secrets():
         secrets += ' --secret id=%s,src=../secrets/%s' % (secret, secret)
 
-    return 'docker build' \
+    return 'DOCKER_BUILDKIT=1 docker build' \
          + secrets \
          + ' --network=host' \
          + ' --build-arg CACHE_BUST=%d' % (int(time.time())) \
