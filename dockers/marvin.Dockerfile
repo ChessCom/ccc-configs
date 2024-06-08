@@ -14,7 +14,6 @@ ADD https://api.github.com/repos/bmdanielsson/marvin-chess/git/refs/heads/master
 # Clone and build from master
 RUN git clone https://github.com/bmdanielsson/marvin-chess.git && \
     cd marvin-chess && \
-    make -j net && \
     make -j
 
 CMD [ "./marvin-chess/marvin" ]
