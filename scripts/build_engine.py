@@ -17,31 +17,40 @@ NIDs = {
     'svart'       : 352619, 'whitecore'   : 352620, 'carp'        : 352621, 'viridithas'  : 352622,
     'altair'      : 352623, 'stormphrax'  : 352624, 'stockdory'   : 352625, 'equisetum'   : 352627,
     'obsidian'    : 366189, 'midnight'    : 372997, 'willow'      : 372999, 'akimbo'      : 373001,
-    'plentychess' : 376027
+    'plentychess' : 376027, 'minitorch'   : 395059, 'minifish'    : 395060,
 }
 
 def gather_secrets():
     return [f for f in os.listdir('../secrets') if not f.startswith('.')]
 
-def build_command(engine):
+def build_command(args, engine):
 
     if not os.path.exists('../dockers/%s.Dockerfile' % (engine)):
         raise Exception('Dockerfile for %s does not exist in ../dockers/' % (engine))
+
+    if args.sudo:
+        base_command = 'DOCKER_BUILDKIT=1 sudo docker build'
+    else:
+        base_command = 'DOCKER_BUILDKIT=1 docker build'
 
     secrets = ''
     for secret in gather_secrets():
         secrets += ' --secret id=%s,src=../secrets/%s' % (secret, secret)
 
-    return 'DOCKER_BUILDKIT=1 docker build' \
+    return base_command \
          + secrets \
          + ' --network=host' \
          + ' --build-arg CACHE_BUST=%d' % (int(time.time())) \
          + ' -t ccc-engines/%s' % (engine) \
          + ' -f ../dockers/%s.Dockerfile .' % (engine)
 
-def get_version(engine):
+def get_version(args, engine):
 
-    cmd  = ['docker run --rm -i ccc-engines/%s' % (engine)]
+    cmd = ['docker run --rm -i ccc-engines/%s' % (engine)]
+
+    if args.sudo:
+        cmd[0] = 'sudo ' + cmd[0]
+
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
 
     proc.stdin.write('uci\n')
@@ -56,14 +65,14 @@ def get_version(engine):
 
     return ' '.join(line.split()[3:])
 
-def update_version(engine):
+def update_version(args, engine):
 
     if not os.path.exists('../secrets/.update_endpoint'):
         raise Exception('No known server update endpoint')
 
     params = {
         'id'      : NIDs[engine],
-        'version' : get_version(engine),
+        'version' : get_version(args, engine),
     }
 
     with open('../secrets/.update_endpoint') as fin:
@@ -84,15 +93,16 @@ if __name__ == '__main__':
     p.add_argument('--dry',    help='Print build command only'     , action='store_true')
     p.add_argument('--skip',   help='Skip building entirely'       , action='store_true')
     p.add_argument('--update', help='Update the CCC server version', action='store_true')
+    p.add_argument('--sudo',   help='Run docker commands with sudo', action='store_true')
     args = p.parse_args()
 
     if args.dry:
-        print (build_command(args.engine))
+        print (build_command(args, args.engine))
         sys.exit()
 
     if not args.skip:
-        os.system(build_command(args.engine))
-        print ('Built version %s for %s' % (get_version(args.engine), args.engine))
+        os.system(build_command(args, args.engine))
+        print ('Built version %s for %s' % (get_version(args, args.engine), args.engine))
 
     if args.update:
-        update_version(args.engine)
+        update_version(args, args.engine)
