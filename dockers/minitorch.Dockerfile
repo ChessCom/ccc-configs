@@ -20,6 +20,6 @@ RUN --mount=type=secret,id=TORCHBENCH_USER \
     cd TorchDev && \
     OPENBENCH_USERNAME=$(cat /run/secrets/TORCHBENCH_USER) \
     OPENBENCH_PASSWORD=$(cat /run/secrets/TORCHBENCH_PASS) \
-    python3 make.py pgo --exe=torch --cxx clang++ -j --numa
+    python3 make.py pgo --exe=torch --cxx clang++ -j --numa --L1 256 --nn tch161-256-45.2x256.kxl
 
 CMD [ "./TorchDev/torch" ]
