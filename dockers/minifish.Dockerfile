@@ -11,7 +11,7 @@ ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 
-# Clone and build from master
+# Clone and build from L1-256
 RUN git clone --branch L1-256 https://github.com/AndyGrant/Stockfish.git && \
     cd Stockfish/src && \
     make -j profile-build ARCH=x86-64-avx2 COMP=gcc
