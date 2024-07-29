@@ -33,7 +33,7 @@ ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 
-# Clone and build from L1-256
+# Clone and build from net_swap
 RUN git clone --branch net_swap https://github.com/AndyGrant/Stockfish.git && \
     cd Stockfish/src && \
     mv ../../tch*.sf . && \
