@@ -18,6 +18,7 @@ NIDs = {
     'altair'      : 352623, 'stormphrax'  : 352624, 'stockdory'   : 352625, 'equisetum'   : 352627,
     'obsidian'    : 366189, 'midnight'    : 372997, 'willow'      : 372999, 'akimbo'      : 373001,
     'plentychess' : 376027, 'minitorch'   : 395059, 'minifish'    : 395060, 'halogen'     : 194321,
+    'patricia'    : 396677,
 }
 
 def gather_secrets():
