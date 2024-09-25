@@ -18,7 +18,7 @@ NIDs = {
     'altair'      : 352623, 'stormphrax'  : 352624, 'stockdory'   : 352625, 'equisetum'   : 352627,
     'obsidian'    : 366189, 'midnight'    : 372997, 'willow'      : 372999, 'akimbo'      : 373001,
     'plentychess' : 376027, 'minitorch'   : 395059, 'minifish'    : 395060, 'halogen'     : 194321,
-    'patricia'    : 396677,
+    'patricia'    : 396677, 'integral'    : 399594, 'clarity'     : 399596, 'renegade'    : 399598,
 }
 
 def gather_secrets():
@@ -33,6 +33,9 @@ def build_command(args, engine):
         base_command = 'DOCKER_BUILDKIT=1 sudo docker build'
     else:
         base_command = 'DOCKER_BUILDKIT=1 docker build'
+
+    if args.verbose:
+        base_command += ' --progress plain'
 
     secrets = ''
     for secret in gather_secrets():
@@ -90,11 +93,12 @@ if __name__ == '__main__':
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     p = argparse.ArgumentParser()
-    p.add_argument('engine',   help='Engine Name')
-    p.add_argument('--dry',    help='Print build command only'     , action='store_true')
-    p.add_argument('--skip',   help='Skip building entirely'       , action='store_true')
-    p.add_argument('--update', help='Update the CCC server version', action='store_true')
-    p.add_argument('--sudo',   help='Run docker commands with sudo', action='store_true')
+    p.add_argument('engine',    help='Engine Name')
+    p.add_argument('--dry',     help='Print build command only'       , action='store_true')
+    p.add_argument('--skip',    help='Skip building entirely'         , action='store_true')
+    p.add_argument('--update',  help='Update the CCC server version'  , action='store_true')
+    p.add_argument('--sudo',    help='Run docker commands with sudo'  , action='store_true')
+    p.add_argument('--verbose', help='Use plain progress Docker style', action='store_true')
     args = p.parse_args()
 
     if args.dry:
