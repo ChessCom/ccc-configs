@@ -18,10 +18,9 @@ RUN git clone https://github.com/jdart1/arasan-chess && \
     cd arasan-chess && \
     git submodule update --init --recursive && \
     cd src && \
-    make -j CC=clang BUILD_TYPE=avx2 profiled
+    make -j CC=clang BUILD_TYPE=avx2 
 
 # Copy the init file and the Networks where they are expected
-RUN cp arasan-chess/network/* arasan-chess/bin && \
-    cp arasan-chess/src/arasan.rc arasan-chess/bin
+RUN cp arasan-chess/network/* arasan-chess/bin
 
 CMD [ "./arasan-chess/bin/arasanx-64-avx2" ]
