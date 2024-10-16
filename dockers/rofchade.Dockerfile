@@ -4,7 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt-get -y install git make cmake wget curl gcc g++ clang llvm lld
 
-RUN apt-get -y install unzip python3-pip && pip3 install gdown
+RUN apt update && apt-get -y install unzip python3-pip && pip3 install gdown
 
 # ------------------------------------------------------------------------------
 
@@ -18,7 +18,6 @@ RUN --mount=type=secret,id=ROFCHADE_URL \
 
 RUN unzip rofchade.zip && \
     mv rofchade/* . && rm -rf rofchade/ rofchade.zip && \
-    mv rofChadeAVX2 rofchade.bin && chmod +x rofchade.bin && \
-    mv *.nnue rofchade.nnue
+    mv rofChadeAVX2 rofchade.bin && chmod +x rofchade.bin
 
 CMD [ "./rofchade.bin" ]
