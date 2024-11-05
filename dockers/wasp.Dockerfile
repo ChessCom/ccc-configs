@@ -12,8 +12,8 @@ ARG CACHE_BUST
 # ------------------------------------------------------------------------------
 
 # Downloads found at: https://waspchess.stanback.net/wasp_downloads.html
-RUN wget https://waspchess.stanback.net/wasp_downloads/Wasp_7.00/Wasp700-linux-avx && \
-    mv Wasp700-linux-avx Wasp && \
+RUN wget https://waspchess.stanback.net/wasp_downloads/Wasp_7.04/Wasp704-linux-avx && \
+    mv Wasp704-linux-avx Wasp && \
     chmod +x Wasp
 
 CMD [ "./Wasp" ]
