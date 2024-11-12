@@ -19,10 +19,9 @@ ARG CACHE_BUST
 # ------------------------------------------------------------------------------
 
 # Clone and build from main
-RUN git clone --branch morelayers_16_sqrrelu https://github.com/Ciekce/Stormphrax && \
+RUN git clone https://github.com/Ciekce/Stormphrax && \
     cd Stormphrax && \
-    wget https://github.com/Ciekce/stormphrax-nets/releases/download/net037_dev/net037_dev.nnue && \
-    make native CXX=clang++ COMMIT_HASH=on EVALFILE=net037_dev.nnue && \
+    make native CXX=clang++ COMMIT_HASH=on && \
     mv stormphrax-*-native stormphrax
 
 CMD [ "./Stormphrax/stormphrax" ]
