@@ -16,4 +16,4 @@ RUN git clone https://github.com/gab8192/Obsidian && \
     cd Obsidian && \
     make -j
 
-CMD [ "./Obsidian/Obsidian.elf" ]
+CMD [ "./Obsidian/Obsidian" ]
