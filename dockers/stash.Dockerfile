@@ -16,4 +16,4 @@ RUN git clone https://github.com/mhouppin/stash-bot.git && \
     cd stash-bot && \
     CC=gcc ./utils/build.sh
 
-CMD [ "./stash-bot/src/stash-bot" ]
+CMD [ "./stash-bot/src/stash" ]
