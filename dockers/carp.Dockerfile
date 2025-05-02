@@ -19,8 +19,8 @@ ENV PATH="/root/.cargo/bin:$PATH"
 
 # ------------------------------------------------------------------------------
 
-# Force the cache to break if there have been new commits
-ADD https://api.github.com/repos/dede1751/carp/git/refs/heads/main /.git-hashref
+# Force the cache to break, using CACHE_BUST = $(date +%s)
+ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 

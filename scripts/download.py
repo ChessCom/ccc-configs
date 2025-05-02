@@ -9,6 +9,12 @@ import zipfile
 
 def download_logfile(tour_id, game_id, out_dir):
 
+    working_dir   = os.path.dirname(os.path.abspath(__file__))
+    new_file_path = os.path.join(working_dir, out_dir, '%d-%d.log' % (tour_id, game_id))
+
+    if os.path.exists(new_file_path):
+        return
+
     print ('Downloading game #%d from %d' % (game_id - tour_id, tour_id))
 
     base_url = 'https://cccfiles.chess.com/archive/cutechess.debug-%d-%d.zip'
@@ -24,8 +30,6 @@ def download_logfile(tour_id, game_id, out_dir):
             zip_ref.extractall(temp_dir)
 
         old_file_path = os.path.join(temp_dir, os.listdir(temp_dir)[0])
-        working_dir   = os.path.dirname(os.path.abspath(__file__))
-        new_file_path = os.path.join(working_dir, out_dir, '%d-%d.log' % (tour_id, game_id))
         shutil.copy(old_file_path, new_file_path)
 
 def download_event(tour_id, games, out_dir, start=0):

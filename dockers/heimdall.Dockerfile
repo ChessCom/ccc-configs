@@ -22,8 +22,8 @@ RUN wget https://github.com/git-lfs/git-lfs/releases/download/v3.4.0/git-lfs-lin
 
 # ------------------------------------------------------------------------------
 
-# Force the cache to break if there have been new commits
-ADD https://api.github.com/repos/nocturn9x/heimdall/git/refs/heads/master /.git-hashref
+# Force the cache to break, using CACHE_BUST = $(date +%s)
+ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 

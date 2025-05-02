@@ -8,8 +8,8 @@ RUN apt update && apt-get -y install bc
 
 # ------------------------------------------------------------------------------
 
-# Force the cache to break if there have been new commits
-ADD https://api.github.com/repos/jdart1/arasan-chess/git/refs/heads/master /.git-hashref
+# Force the cache to break, using CACHE_BUST = $(date +%s)
+ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 

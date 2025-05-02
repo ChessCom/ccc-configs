@@ -6,6 +6,11 @@ RUN apt update && apt-get -y install git make cmake wget curl gcc g++ clang llvm
 
 # ------------------------------------------------------------------------------
 
+# Force the cache to break, using CACHE_BUST = $(date +%s)
+ARG CACHE_BUST
+
+# ------------------------------------------------------------------------------
+
 # Download the Main Network
 RUN --mount=type=secret,id=TORCHBENCH_USER \
     --mount=type=secret,id=TORCHBENCH_PASS \
@@ -25,13 +30,6 @@ RUN --mount=type=secret,id=TORCHBENCH_USER \
        -F "password=$(cat /run/secrets/TORCHBENCH_PASS)" \
        $(cat /run/secrets/TORCHBENCH_SITE)/api/networks/Stockfish/tch161-128-45.2x128.sf/ \
        --output tch161-128-45.2x128.sf
-
-# ------------------------------------------------------------------------------
-
-# Force the cache to break, using CACHE_BUST = $(date +%s)
-ARG CACHE_BUST
-
-# ------------------------------------------------------------------------------
 
 # Clone and build from net_swap
 RUN git clone --branch net_swap https://github.com/AndyGrant/Stockfish.git && \

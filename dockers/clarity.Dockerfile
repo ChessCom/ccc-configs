@@ -6,8 +6,8 @@ RUN apt update && apt-get -y install git make cmake wget curl gcc g++ clang llvm
 
 # ------------------------------------------------------------------------------
 
-# Force the cache to break if there have been new commits
-ADD https://api.github.com/repos/Vast342/Clarity/git/refs/heads/main /.git-hashref
+# Force the cache to break, using CACHE_BUST = $(date +%s)
+ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 
