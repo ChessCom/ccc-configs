@@ -17,12 +17,9 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh && \
 # Add Cargo to the path
 ENV PATH="/root/.cargo/bin:$PATH"
 
-# # ------------------------------------------------------------------------------
-#
-# # Force the cache to break if there have been new commits
-# ADD https://api.github.com/repos/codedeliveryservice/Reckless/git/refs/heads/main /.git-hashref
-#
-# # ------------------------------------------------------------------------------
+# Setup for PGO
+RUN rustup component add llvm-tools && \
+    cargo install cargo-pgo
 
 # ------------------------------------------------------------------------------
 
@@ -31,10 +28,12 @@ ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 
-# Clone and build from master
-RUN git clone https://github.com/codedeliveryservice/Reckless && \
+# Clone and build from main
+RUN git clone --branch main https://github.com/codedeliveryservice/Reckless && \
     cd Reckless && \
-    cargo rustc --release -- -C target-cpu=native && \
-    make EXE=reckless
+    cargo pgo instrument && \
+    cargo pgo run -- bench && \
+    cargo pgo optimize && \
+    mv target/$(rustc --print host-tuple)/release/reckless reckless
 
 CMD [ "./Reckless/reckless" ]
