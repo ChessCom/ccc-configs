@@ -11,8 +11,8 @@ ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 
-RUN wget https://github.com/booot76/Booot-chess-engine/releases/download/7.3/booot73_avx2_linux && \
-    chmod +x booot73_avx2_linux && \
-    mv booot73_avx2_linux booot
+RUN wget https://github.com/booot76/Booot-chess-engine/releases/download/7.4/booot7_linux_avx2 && \
+    chmod +x booot7_linux_avx2 && \
+    mv booot7_linux_avx2 booot
 
 CMD [ "./booot" ]
