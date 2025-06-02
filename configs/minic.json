@@ -1,0 +1,9 @@
+{
+    "command": "/data/generic.sh minic",
+    "options": {
+        "Threads": 250,
+        "Hash": 16384,
+        "SyzygyPath": "/data/tablebases",
+        "PawnHash": 4096
+    }
+}

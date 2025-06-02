@@ -1,0 +1,8 @@
+{
+    "command": "/data/generic.sh weiss",
+    "options": {
+        "Threads": 250,
+        "Hash": 16384,
+        "SyzygyPath": "/data/tablebases"
+    }
+}

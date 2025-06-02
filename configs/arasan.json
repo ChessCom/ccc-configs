@@ -1,0 +1,12 @@
+{
+    "command": "/data/generic.sh arasan",
+    "options": {
+        "Threads": 250,
+        "Hash": 16384,
+        "SyzygyPath": "/data/tablebases",
+        "OwnBook": "false",
+        "Ponder": "false",
+        "SyzygyTbPath": "/data/tablebases",
+        "Use tablebases": "true"
+    }
+}

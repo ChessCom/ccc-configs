@@ -1,0 +1,9 @@
+{
+    "command": "/data/generic.sh torch",
+    "options": {
+        "Threads": 250,
+        "Hash": 16384,
+        "SyzygyPath": "/data/tablebases",
+        "Contempt": 0
+    }
+}

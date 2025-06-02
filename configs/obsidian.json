@@ -1,0 +1,9 @@
+{
+    "command": "/data/generic.sh obsidian",
+    "options": {
+        "Threads": 250,
+        "Hash": 16384,
+        "SyzygyPath": "/data/tablebases",
+        "ContemptOverrides": "Stash=260,Wasp=240,Weiss=220,Tucano=200,Patricia=180"
+    }
+}

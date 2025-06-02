@@ -1,0 +1,14 @@
+{
+    "command": "/data/generic.sh dragon",
+    "options": {
+        "Threads": 250,
+        "Hash": 16384,
+        "SyzygyPath": "/data/tablebases",
+        "Smart Syzygy": "false",
+        "Syzygy Probe Depth": 2,
+        "Syzygy Probe Limit": 7,
+        "Contempt": 0,
+        "OwnBook": "false",
+        "Table Memory": "256"
+    }
+}
