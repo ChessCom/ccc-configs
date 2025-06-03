@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh blackmarlin",
+    "command": "/data/generic.sh blackmarlin CPU",
     "options": {
         "Threads": 250,
         "Hash": 16384,

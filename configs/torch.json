@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh torch",
+    "command": "/data/generic.sh torch CPU",
     "options": {
         "Threads": 250,
         "Hash": 16384,

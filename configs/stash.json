@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh stash",
+    "command": "/data/generic.sh stash CPU",
     "options": {
         "Threads": 250,
         "Hash": 16384,

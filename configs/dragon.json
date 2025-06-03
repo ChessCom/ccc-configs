@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh dragon",
+    "command": "/data/generic.sh dragon CPU",
     "options": {
         "Threads": 250,
         "Hash": 16384,

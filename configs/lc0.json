@@ -1,0 +1,29 @@
+{
+    "command": "/data/generic.sh lc0 CPU",
+    "options": {
+        "MoveOverheadMs": "1000",
+        "WeightsFile": "/weights/BT4-1740.pb.gz",
+        "Threads": "2",
+        "Backend": "demux",
+        "BackendOptions": "backend=cuda-fp16,(gpu=0,policy_head=vanilla,value_head=winner),(gpu=1,policy_head=vanilla,value_head=winner)",
+        "MinibatchSize": "160",
+        "TaskWorkers": "3",
+        "SmartPruningFactor": "2",
+        "SmartPruningMinimumBatches": "300",
+        "TimeManager": "legacy(book-ply-bonus=0.4)",
+        "ScoreType": "WDL_mu",
+        "VerboseMoveStats": "true",
+        "SyzygyPath": "/data/tablebases",
+        "Ponder": "false",
+        "UCI_ShowWDL": "true",
+        "UCI_ShowMovesLeft": "true",
+        "StrictTiming": "true",
+        "CPuct": "1.43",
+        "CPuctFactor": "2.1",
+        "CPuctBase": "45000",
+        "FpuValue": "0.325",
+        "PolicyTemperature": "1.285",
+        "PolicyDecayFactor": "0.00042",
+        "PolicyDecayExponent": "0.17"
+    }
+}
