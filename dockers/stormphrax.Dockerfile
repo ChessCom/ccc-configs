@@ -11,10 +11,9 @@ ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 
-# Clone and build from ???
+# Clone and build from main
 RUN git clone https://github.com/Ciekce/Stormphrax && \
     cd Stormphrax && \
-    git checkout morelayers_redux && \
     make native CXX=clang++ COMMIT_HASH=on && \
     mv stormphrax-*-native stormphrax
 
