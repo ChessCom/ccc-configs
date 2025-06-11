@@ -19,18 +19,22 @@ RUN apt-get update && \
     python3-venv \
     wget
 
-
 # Install LLVM 20
 RUN wget https://apt.llvm.org/llvm.sh && \
     chmod +x llvm.sh && \
     ./llvm.sh 20 && \
     rm -rf llvm.sh
 
-
 # Set up LLVM environment
 RUN ln -s /usr/bin/clang-20 /usr/bin/clang && \
     ln -s /usr/bin/clang++-20 /usr/bin/clang++
 
+# ------------------------------------------------------------------------------
+
+# Force the cache to break, using CACHE_BUST = $(date +%s)
+ARG CACHE_BUST
+
+# ------------------------------------------------------------------------------
 
 # Set environment variables for LLVM
 ENV CC=clang
