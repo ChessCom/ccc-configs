@@ -14,7 +14,7 @@ ARG CACHE_BUST
 # ------------------------------------------------------------------------------
 
 # Determine the default Network via the API
-RUN echo $(curl http://chess.grantnet.us/api/networks/Ethereal/ |jq -r '.default.sha') >> /.default-net
+RUN echo $(curl http://chess.grantnet.us/api/networks/Ethereal/ |jq -r '.default.sha256') >> /.default-net
 
 # Download the default Network, using GRANTNET_USER and GRANTNET_PASS secrets
 RUN --mount=type=secret,id=GRANTNET_USER --mount=type=secret,id=GRANTNET_PASS \
