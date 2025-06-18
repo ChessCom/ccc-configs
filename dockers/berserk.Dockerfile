@@ -17,6 +17,6 @@ ARG CACHE_BUST
 RUN git clone https://github.com/jhonnold/berserk.git && \
     cd berserk/src && \
     git checkout main && \
-    make build -j ARCH=native EXE=berserk CC=clang
+    make pgo -j ARCH=native EXE=berserk CC=clang
 
 CMD [ "./berserk/src/berserk" ]
