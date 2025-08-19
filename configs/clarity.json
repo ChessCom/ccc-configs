@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh clarity CPU",
+    "command": "/data/engines/clarity.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

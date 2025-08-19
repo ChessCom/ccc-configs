@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh seer CPU",
+    "command": "/data/engines/seer.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

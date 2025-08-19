@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh plentychess CPU",
+    "command": "/data/engines/plentychess.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

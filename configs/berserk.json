@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh berserk CPU",
+    "command": "/data/engines/berserk.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

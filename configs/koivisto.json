@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh koivisto CPU",
+    "command": "/data/engines/koivisto.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

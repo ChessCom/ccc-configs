@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh rubi CPU",
+    "command": "/data/engines/rubi.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

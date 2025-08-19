@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh rofchade CPU",
+    "command": "/data/engines/rofchade.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

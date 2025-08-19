@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh viridithas CPU",
+    "command": "/data/engines/viridithas.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

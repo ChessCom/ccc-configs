@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh tucano CPU",
+    "command": "/data/engines/tucano.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

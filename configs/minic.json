@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh minic CPU",
+    "command": "/data/engines/minic.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

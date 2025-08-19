@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh integral CPU",
+    "command": "/data/engines/integral.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

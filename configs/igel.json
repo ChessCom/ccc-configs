@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh igel CPU",
+    "command": "/data/engines/igel.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh obsidian CPU",
+    "command": "/data/engines/obsidian.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

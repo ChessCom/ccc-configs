@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh velvet CPU",
+    "command": "/data/engines/velvet.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

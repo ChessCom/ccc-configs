@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh wasp CPU",
+    "command": "/data/engines/wasp.sh",
     "options": {
         "Threads": 125,
         "Hash": 16384,

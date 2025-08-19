@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh uralochka CPU",
+    "command": "/data/engines/uralochka.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

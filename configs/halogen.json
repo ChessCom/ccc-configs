@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh halogen CPU",
+    "command": "/data/engines/halogen.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

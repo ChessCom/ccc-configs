@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh reckless CPU",
+    "command": "/data/engines/reckless.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

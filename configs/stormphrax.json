@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh stormphrax CPU",
+    "command": "/data/engines/stormphrax.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

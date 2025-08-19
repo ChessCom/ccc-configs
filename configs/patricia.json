@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh patricia CPU",
+    "command": "/data/engines/patricia.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

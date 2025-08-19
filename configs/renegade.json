@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh renegade CPU",
+    "command": "/data/engines/renegade.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

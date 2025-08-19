@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh arasan CPU",
+    "command": "/data/engines/arasan.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

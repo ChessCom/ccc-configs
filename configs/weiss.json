@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh weiss CPU",
+    "command": "/data/engines/weiss.sh",
     "options": {
         "Threads": 250,
         "Hash": 16384,

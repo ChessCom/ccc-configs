@@ -1,5 +1,5 @@
 {
-    "command": "/data/generic.sh lc0 CPU",
+    "command": "/data/engines/lc0.sh",
     "options": {
         "MoveOverheadMs": "1000",
         "WeightsFile": "/weights/BT4-1740.pb.gz",
