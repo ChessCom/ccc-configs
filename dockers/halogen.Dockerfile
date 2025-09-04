@@ -14,6 +14,7 @@ ARG CACHE_BUST
 # Clone and build from master
 RUN git clone --branch master https://github.com/KierenP/Halogen.git && \
     cd Halogen/src && \
-    make -j EXE=Halogen-master
+    make pgo EXE=Halogen-master -j EXTRA_CXXFLAGS='-DTOURNAMENT_MODE' EXTRA_LDFLAGS='-lnuma'
+
 
 CMD [ "./Halogen/src/Halogen-master" ]
