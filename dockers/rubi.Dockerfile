@@ -4,6 +4,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt-get -y install git make cmake wget curl gcc g++ clang llvm lld
 
+RUN apt-get -y install libnuma-dev
+
 # ------------------------------------------------------------------------------
 
 # Force the cache to break, using CACHE_BUST = $(date +%s)
