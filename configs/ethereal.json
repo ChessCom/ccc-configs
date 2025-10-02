@@ -1,5 +1,6 @@
 {
     "command": "/data/engines/ethereal.sh",
+    "timemargin": 1000,
     "options": {
         "Threads": 250,
         "Hash": 16384,
