@@ -1,5 +1,6 @@
 {
     "command": "/data/engines/lc0.sh",
+    "timemargin": 1000,
     "options": {
         "MoveOverheadMs": "1000",
         "WeightsFile": "/weights/BT4-1740.pb.gz",
