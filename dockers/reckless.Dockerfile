@@ -29,7 +29,7 @@ ARG CACHE_BUST
 # ------------------------------------------------------------------------------
 
 # Clone and build from main
-RUN git clone --branch main https://github.com/codedeliveryservice/Reckless && \
+RUN git clone --branch ccc https://github.com/codedeliveryservice/Reckless && \
     cd Reckless && \
     cargo pgo instrument && \
     cargo pgo run -- bench && \
