@@ -18,9 +18,9 @@ RUN apt-get update && \
     python3-venv
 
 RUN PATH="/$HOME/.local/bin:$PATH" && \
-    git clone https://github.com/Ergodice/lc0.git && \
+    git clone https://github.com/Menkib64/lc0/ && \
     cd lc0 && \
-    git checkout master && \
+    git checkout ccc-cutlass-cuda-graphs && \
     git submodule update --remote && \
     pip3 install virtualenv meson && \
     ln -s /usr/bin/python3 /usr/bin/python && \
@@ -50,7 +50,11 @@ RUN echo $TZ > /etc/timezone && \
     libgomp1 \
     libprotobuf-dev \
     libgoogle-perftools-dev && \
-    apt purge wget git -y && \
+    apt purge git -y && \
     apt autoclean
+
+WORKDIR /root/lc0
+
+RUN wget https://storage.lczero.org/files/networks-contrib/BT4-1024x15x32h-swa-6147500-policytune-332.pb.gz
 
 CMD [ "/root/lc0/lc0",  "--show-hidden" ]
