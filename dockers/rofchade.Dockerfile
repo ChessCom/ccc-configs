@@ -18,6 +18,6 @@ RUN --mount=type=secret,id=ROFCHADE_URL \
 
 RUN unzip rofchade.zip && \
     mv rofchade/* . && rm -rf rofchade/ rofchade.zip && \
-    mv rofChadeAVX2 rofchade.bin && chmod +x rofchade.bin
+    mv rofChade rofchade.bin && chmod +x rofchade.bin
 
 CMD [ "./rofchade.bin" ]
