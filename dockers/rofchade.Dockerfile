@@ -17,7 +17,6 @@ RUN --mount=type=secret,id=ROFCHADE_URL \
     gdown $(cat /run/secrets/ROFCHADE_URL) -O rofchade.zip
 
 RUN unzip rofchade.zip && \
-    mv rofchade/* . && rm -rf rofchade/ rofchade.zip && \
     mv rofChade rofchade.bin && chmod +x rofchade.bin
 
 CMD [ "./rofchade.bin" ]
