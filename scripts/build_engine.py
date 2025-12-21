@@ -35,6 +35,9 @@ def build_command(args, engine):
     else:
         base_command = 'DOCKER_BUILDKIT=1 docker build'
 
+    if engine == 'lc0':
+        base_command = base_command.replace('docker', 'nvidia-docker')
+
     if args.verbose:
         base_command += ' --progress plain'
 
@@ -51,7 +54,9 @@ def build_command(args, engine):
 
 def get_version(args, engine):
 
-    cmd = ['docker run --rm -i ccc-engines/%s' % (engine)]
+    runtime = 'nvidia-docker' if engine == 'lc0' else 'docker'
+
+    cmd = ['%s run --rm -i ccc-engines/%s' % (runtime, engine)]
 
     if args.sudo:
         cmd[0] = 'sudo ' + cmd[0]
