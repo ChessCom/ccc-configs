@@ -40,7 +40,13 @@ RUN PATH="/$HOME/.local/bin:$PATH" && \
     pip3 install meson && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     git clone -b 2.11 https://github.com/NVIDIA/cutlass.git /tmp/cutlass && \
-    INSTALL_PREFIX=/root/.local ./build.sh release -Dcutlass=true -Dcutlass_include=/tmp/cutlass/include -Dmalloc=tcmalloc -Db_lto=true -Ddefault_library=static
+    INSTALL_PREFIX=/root/.local ./build.sh release \
+        -Dcutlass=true \
+        -Dcutlass_include=/tmp/cutlass/include \
+        -Dmalloc=tcmalloc \
+        -Db_lto=true \
+        -Ddefault_library=static \
+        -Ddefault_search="dag-preview"
 
 FROM nvidia/cuda:11.3.0-cudnn8-devel-ubuntu20.04
 
