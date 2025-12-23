@@ -1,12 +1,9 @@
-FROM nvidia/cuda:11.3.0-cudnn8-devel-ubuntu20.04 as builder
+FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN=true
 
 WORKDIR /root
-
-RUN rm /etc/apt/sources.list.d/cuda.list && \
-    rm /etc/apt/sources.list.d/nvidia-ml.list
 
 RUN apt-get update && \
     apt-get install -y \
@@ -19,17 +16,6 @@ RUN apt-get update && \
     wget \
     git \
     python3-venv
-
-RUN apt-get update && \
-    apt-get install -y gcc-10 g++-10 && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 && \
-    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
-
-ENV CUDAHOSTCXX=/usr/bin/g++-10
-ENV CC=/usr/bin/gcc-10
-ENV CXX=/usr/bin/g++-10
-
-RUN nvcc --version && g++ --version && gcc --version
 
 RUN PATH="/$HOME/.local/bin:$PATH" && \
     git clone https://github.com/Menkib64/lc0/ && \
@@ -48,7 +34,7 @@ RUN PATH="/$HOME/.local/bin:$PATH" && \
         -Ddefault_library=static \
         -Ddefault_search="dag-preview"
 
-FROM nvidia/cuda:11.3.0-cudnn8-devel-ubuntu20.04
+FROM nvidia/cuda:12.8.0-cudnn-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN=true
@@ -58,9 +44,6 @@ ARG TZ='America/Los_Angeles'
 WORKDIR /root
 
 COPY --from=builder /root/lc0/build/release /root/lc0
-
-RUN rm /etc/apt/sources.list.d/cuda.list
-RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 
 RUN echo $TZ > /etc/timezone && \
     apt-get update && \
@@ -73,4 +56,3 @@ WORKDIR /root/lc0
 RUN wget https://storage.lczero.org/files/networks-contrib/BT4-1024x15x32h-swa-6147500-policytune-332.pb.gz
 
 CMD [ "/root/lc0/./lc0", "--show-hidden" ]
-
