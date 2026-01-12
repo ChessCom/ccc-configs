@@ -32,7 +32,8 @@ RUN PATH="/$HOME/.local/bin:$PATH" && \
         -Dmalloc=tcmalloc \
         -Db_lto=true \
         -Ddefault_library=static \
-        -Ddefault_search="dag-preview"
+        -Ddefault_search="dag-preview" \
+        -Dcc_cuda=80
 
 FROM nvidia/cuda:12.8.0-cudnn-runtime-ubuntu22.04
 
