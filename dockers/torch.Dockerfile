@@ -4,7 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache clang compiler-rt llvm make git python3-dev py3-pip build-base numactl-dev && \
     pip install --upgrade pip && \
-    pip install py-cpuinfo requests
+    pip install py-cpuinfo requests numpy
 
 # ------------------------------------------------------------------------------
 
