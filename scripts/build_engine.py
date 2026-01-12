@@ -36,7 +36,7 @@ def build_command(args, engine):
 
 def get_version(args, engine):
 
-    cmd = ['docker run --rm -i ccc-engines/%s' % (engine)]
+    cmd = ['docker run --cap-add=SYS_NICE --rm -i ccc-engines/%s' % (engine)]
 
     if args.sudo:
         cmd[0] = 'sudo ' + cmd[0]
