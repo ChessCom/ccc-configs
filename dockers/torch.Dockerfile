@@ -1,10 +1,10 @@
-FROM alpine:3.18
+FROM alpine:3.22
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache clang compiler-rt llvm make git python3-dev py3-pip build-base numactl-dev && \
-    pip install --upgrade pip && \
-    pip install py-cpuinfo requests numpy
+    pip install --upgrade pip --break-system-packages && \
+    pip install py-cpuinfo requests numpy --break-system-packages
 
 # ------------------------------------------------------------------------------
 
@@ -12,6 +12,8 @@ RUN apk add --no-cache clang compiler-rt llvm make git python3-dev py3-pip build
 ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
+
+RUN clang++ --version
 
 RUN --mount=type=secret,id=TORCHBENCH_USER \
     --mount=type=secret,id=TORCHBENCH_PASS \
