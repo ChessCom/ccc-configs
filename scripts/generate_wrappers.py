@@ -38,3 +38,5 @@ for filename in os.listdir(DOCKER_DIR):
 
     with open(wrapper_path, 'w') as f:
         f.write(content)
+
+    os.system('chmod +x %s' % (wrapper_path))
