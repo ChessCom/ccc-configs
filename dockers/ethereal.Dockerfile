@@ -14,14 +14,22 @@ ARG CACHE_BUST
 # ------------------------------------------------------------------------------
 
 # Determine the default Network via the API
-RUN echo $(curl http://chess.grantnet.us/api/networks/Ethereal/ |jq -r '.default.sha256') >> /.default-net
+RUN --mount=type=secret,id=TORCHBENCH_USER \
+    --mount=type=secret,id=TORCHBENCH_PASS \
+    --mount=type=secret,id=TORCHBENCH_SITE \
+    echo $(curl -X POST \
+       -F "username=$(cat /run/secrets/TORCHBENCH_USER)" \
+       -F "password=$(cat /run/secrets/TORCHBENCH_PASS)" \
+        $(cat /run/secrets/TORCHBENCH_SITE)/api/networks/Ethereal/ |jq -r '.default.name') >> /.default-net
 
-# Download the default Network, using GRANTNET_USER and GRANTNET_PASS secrets
-RUN --mount=type=secret,id=GRANTNET_USER --mount=type=secret,id=GRANTNET_PASS \
+# Download the default Network, using TORCHBENCH_USER and TORCHBENCH_PASS secrets
+RUN --mount=type=secret,id=TORCHBENCH_USER \
+    --mount=type=secret,id=TORCHBENCH_PASS \
+    --mount=type=secret,id=TORCHBENCH_SITE \
     curl -X POST \
-       -F "username=$(cat /run/secrets/GRANTNET_USER)" \
-       -F "password=$(cat /run/secrets/GRANTNET_PASS)" \
-       http://chess.grantnet.us/api/networks/Ethereal/$(cat /.default-net)/ \
+       -F "username=$(cat /run/secrets/TORCHBENCH_USER)" \
+       -F "password=$(cat /run/secrets/TORCHBENCH_PASS)" \
+       $(cat /run/secrets/TORCHBENCH_SITE)/api/networks/Ethereal/$(cat /.default-net)/ \
        --output ethy.default.std.nn
 
 # Clone and build from master
