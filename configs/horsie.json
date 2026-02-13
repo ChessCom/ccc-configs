@@ -1,5 +1,5 @@
 {
-    "command": "/data/engines/heimdall.sh",
+    "command": "/data/engines/horsie.sh",
     "timemargin": 1000,
     "options": {
         "Threads": 250,

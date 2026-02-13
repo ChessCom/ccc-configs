@@ -1,0 +1,9 @@
+{
+    "command": "/data/engines/pawnocchio.sh",
+    "timemargin": 1000,
+    "options": {
+        "Threads": 250,
+        "Hash": 16384,
+        "SyzygyPath": "/data/tablebases"
+    }
+}
