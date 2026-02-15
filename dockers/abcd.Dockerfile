@@ -29,6 +29,7 @@ EOF
 
 RUN curl -L https://github.com/Bycclin/abcd/releases/download/n1/abcd-g.nine.nnue -o Stocjfish/src/abcd.nnue
 RUN cd Stockfish/src && \
-    make -j profile-build ARCH=x86-64-avx2 COMP=gcc
+    make -j profile-build ARCH=x86-64-avx2 COMP=gcc && \
+    mv Stockfish abcd
 
 CMD [ "./Stockfish/src/stockfish" ]
