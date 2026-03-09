@@ -18,7 +18,7 @@ RUN --mount=type=secret,id=GRANTNET_USER --mount=type=secret,id=GRANTNET_PASS \
     curl -X POST \
        -F "username=$(cat /run/secrets/GRANTNET_USER)" \
        -F "password=$(cat /run/secrets/GRANTNET_PASS)" \
-       http://chess.grantnet.us/api/networks/Berserk/9B84C340/ \
+       https://chess.grantnet.us/api/networks/Berserk/9B84C340/ \
        --output berserk-9b84c340af7e.nn
 
 # Clone and build from main
