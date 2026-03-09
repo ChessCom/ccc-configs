@@ -14,7 +14,7 @@ ARG CACHE_BUST
 # Clone and build from main
 RUN git clone https://github.com/Ciekce/Stormphrax && \
     cd Stormphrax && \
-    make native CXX=clang++ COMMIT_HASH=on && \
+    make native CXX=clang++ COMMIT_HASH=on USE_LIBNUMA=on && \
     mv stormphrax-*-native stormphrax
 
 CMD [ "./Stormphrax/stormphrax" ]
