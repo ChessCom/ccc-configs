@@ -13,7 +13,7 @@ ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 
-RUN clang++ --version
+RUN ln -s /usr/bin/llvm-profdata /usr/bin/llvm-profdata-20
 
 RUN --mount=type=secret,id=TORCHBENCH_USER \
     --mount=type=secret,id=TORCHBENCH_PASS \
