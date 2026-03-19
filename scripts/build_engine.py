@@ -1,11 +1,15 @@
 #!/bin/python3
 
 import argparse
+import hashlib
+import hmac
 import os
 import requests
 import subprocess
 import sys
 import time
+import time
+
 
 def gather_secrets():
     return [f for f in os.listdir('../secrets') if not f.startswith('.')]
@@ -55,6 +59,49 @@ def get_version(args, engine):
 
     return ' '.join(line.split()[3:])
 
+
+def sanitize_name(name):
+
+    lookup = {
+        'plentychess'   : 'PlentyChess',
+        'rofchade'      : 'RofChade',
+        'blackmarlin'   : 'BlackMarlin',
+    }
+
+    return lookup.get(name.lower(), name.capitalize())
+
+def edit_engine_version(engine_name, engine_version, webhook_secret):
+
+    base_url = 'https://ccc-api.gcp-prod.chess.com'
+
+    timestamp = int(time.time() * 1000)
+
+    sig = hmac.new(
+        webhook_secret.encode('utf-8'),
+        str(timestamp).encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+
+    signature = 'sha256=%s' % sig
+
+    payload = {
+        'name': engine_name,
+        'version': engine_version,
+        'timestamp': timestamp,
+        'signature': signature
+    }
+
+    resp = requests.post(
+        base_url + '/api/public/edit-version/editEngineVersion',
+        json=payload
+    )
+
+    if resp.status_code != 200:
+        raise Exception('Version Update Status Code: %d' % resp.status_code)
+
+    return resp
+
+
 if __name__ == '__main__':
 
     # Always working relative to this script
@@ -66,6 +113,7 @@ if __name__ == '__main__':
     p.add_argument('--skip',    help='Skip building entirely'         , action='store_true')
     p.add_argument('--sudo',    help='Run docker commands with sudo'  , action='store_true')
     p.add_argument('--verbose', help='Use plain progress Docker style', action='store_true')
+    p.add_argument('--update',  help='Update engine version endpoint' , action='store_true')
     args = p.parse_args()
 
     if args.dry:
@@ -74,4 +122,13 @@ if __name__ == '__main__':
 
     if not args.skip:
         os.system(build_command(args, args.engine))
-        print ('Built version %s for %s' % (get_version(args, args.engine), args.engine))
+        version = get_version(args, args.engine)
+        print ('Built version %s for %s' % (version, args.engine))
+
+    if args.update:
+        version     = get_version(args, args.engine)
+        engine_name = sanitize_name(args.engine)
+        with open('../secrets/.ccc-update-secret', 'r') as f:
+            webhook_secret = f.read().strip()
+        edit_engine_version(engine_name, version, webhook_secret)
+        print ('Updated version to %s for %s' % (version, engine_name))
