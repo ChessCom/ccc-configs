@@ -23,8 +23,8 @@ ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 
-# Clone and build from master
-RUN git clone --branch main https://github.com/JonathanHallstrom/pawnocchio && \
+# Clone and build from dev
+RUN git clone --branch dev https://github.com/JonathanHallstrom/pawnocchio && \
     cd pawnocchio && \
     git submodule update --init --depth 1 && \
     make
