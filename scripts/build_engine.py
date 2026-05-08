@@ -66,6 +66,7 @@ def sanitize_name(name):
         'plentychess'   : 'PlentyChess',
         'rofchade'      : 'RofChade',
         'blackmarlin'   : 'BlackMarlin',
+        'pzchessbot'    : 'PZChessBot',
     }
 
     return lookup.get(name.lower(), name.capitalize())
