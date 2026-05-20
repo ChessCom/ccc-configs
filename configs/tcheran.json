@@ -1,7 +1,7 @@
 {
     "command": "/data/engines/tcheran.sh",
     "options": {
-        "Threads": 32,
+        "Threads": 250,
         "Hash": 16384,
         "SyzygyPath": "/data/tablebases"
     }
