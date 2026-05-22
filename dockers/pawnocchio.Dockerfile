@@ -6,7 +6,7 @@ RUN apt update && apt-get -y install git make cmake wget curl gcc g++ clang llvm
 
 # ------------------------------------------------------------------------------
 
-ENV ZIG_VERSION=0.15.2
+ENV ZIG_VERSION=0.16.0
 ENV ZIG_ARCH=x86_64-linux
 ENV ZIG_HOME=/opt/zig
 ENV PATH=${ZIG_HOME}:${PATH}
