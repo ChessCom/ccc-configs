@@ -108,8 +108,10 @@ if __name__ == '__main__':
     # Always working relative to this script
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+    os.makedirs('buildlogs', exist_ok=True)
+
     p = argparse.ArgumentParser()
-    p.add_argument('engine',    help='Engine Name')
+    p.add_argument('engines',   help='Engine Names', nargs='+')
     p.add_argument('--dry',     help='Print build command only'       , action='store_true')
     p.add_argument('--skip',    help='Skip building entirely'         , action='store_true')
     p.add_argument('--sudo',    help='Run docker commands with sudo'  , action='store_true')
@@ -118,18 +120,34 @@ if __name__ == '__main__':
     args = p.parse_args()
 
     if args.dry:
-        print (build_command(args, args.engine))
+        for engine in args.engines:
+            print (build_command(args, engine))
         sys.exit()
 
     if not args.skip:
-        os.system(build_command(args, args.engine))
-        version = get_version(args, args.engine)
-        print ('Built version %s for %s' % (version, args.engine))
+        builds = []
+        for engine in args.engines:
+            log = open('%s.logs' % (engine), 'w')
+            proc = subprocess.Popen(
+                build_command(args, engine),
+                shell=True, stdout=log, stderr=subprocess.STDOUT,
+            )
+            builds.append((engine, proc, log))
+
+        for engine, proc, log in builds:
+            proc.wait()
+            log.close()
+            if proc.returncode != 0:
+                print ('Build failed for %s (see %s.logs)' % (engine, engine))
+                continue
+            version = get_version(args, engine)
+            print ('Built version %s for %s' % (version, engine))
 
     if args.update:
-        version     = get_version(args, args.engine)
-        engine_name = sanitize_name(args.engine)
         with open('../secrets/.ccc-update-secret', 'r') as f:
             webhook_secret = f.read().strip()
-        edit_engine_version(engine_name, version, webhook_secret)
-        print ('Updated version to %s for %s' % (version, engine_name))
+        for engine in args.engines:
+            version     = get_version(args, engine)
+            engine_name = sanitize_name(engine)
+            edit_engine_version(engine_name, version, webhook_secret)
+            print ('Updated version to %s for %s' % (version, engine_name))
