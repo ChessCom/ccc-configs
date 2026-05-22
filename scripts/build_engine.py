@@ -127,7 +127,7 @@ if __name__ == '__main__':
     if not args.skip:
         builds = []
         for engine in args.engines:
-            log = open('%s.logs' % (engine), 'w')
+            log = open('buildlogs/%s.logs' % (engine), 'w')
             proc = subprocess.Popen(
                 build_command(args, engine),
                 shell=True, stdout=log, stderr=subprocess.STDOUT,
@@ -138,7 +138,7 @@ if __name__ == '__main__':
             proc.wait()
             log.close()
             if proc.returncode != 0:
-                print ('Build failed for %s (see %s.logs)' % (engine, engine))
+                print ('Build failed for %s (see buildlogs/%s.logs)' % (engine, engine))
                 continue
             version = get_version(args, engine)
             print ('Built version %s for %s' % (version, engine))
