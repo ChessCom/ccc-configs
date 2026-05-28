@@ -1,12 +1,12 @@
 {
   "command": "/data/engines/lc0.sh",
   "options": {
-    "Hash": "512",
-    "CPuct": "2.897",
+    "Hash": "96",
+    "CPuct": "1.95",
     "Ponder": "false",
     "Backend": "demux",
     "Threads": "2",
-    "FpuValue": "0.98416",
+    "FpuValue": "0.56",
     "CPuctBase": "45569",
     "ScoreType": "WDL_mu",
     "SyzygyPath": "/data/tablebases",
@@ -15,21 +15,21 @@
     "TimeManager": "legacy(book-ply-bonus=0.4)",
     "UCI_ShowEPS": "true",
     "UCI_ShowWDL": "true",
-    "WeightsFile": "BT4-1024x15x32h-swa-6147500-policytune-332.pb.gz",
+    "WeightsFile": "BT4-tf13tune.pb.gz",
     "StrictTiming": "true",
     "MinibatchSize": "104",
     "BackendOptions": "backend=cuda-fp16,(gpu=0,batch=13),(gpu=1,batch=13)",
-    "MoveOverheadMs": "1000",
+    "MoveOverheadMs": "500",
     "VerboseMoveStats": "true",
-    "PolicyTemperature": "1.4",
+    "PolicyTemperature": "1.36",
     "UCI_ShowMovesLeft": "true",
     "WDLCalibrationElo": "3600",
     "MinimumPickingWork": "1",
     "SmartPruningFactor": "2",
     "WDLDrawRateReference": "0.64",
-    "MaxOutOfOrderEvalsFactor": "1.4",
+    "MaxOutOfOrderEvalsFactor": "8",
     "SmartPruningMinimumBatches": "300",
-    "MinimumRemainingPickingWork": "4"
+    "MinimumRemainingPickingWork": "8"
   },
   "timemargin": 1000
 }

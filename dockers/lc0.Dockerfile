@@ -20,7 +20,7 @@ RUN apt-get update && \
 RUN PATH="/$HOME/.local/bin:$PATH" && \
     git clone https://github.com/Menkib64/lc0/ && \
     cd lc0 && \
-    git checkout ccc-cutlass-cuda-graphs && \
+    git checkout ccc-season-25 && \
     git submodule update --remote && \
     pip3 install virtualenv && \
     pip3 install meson && \
@@ -48,12 +48,13 @@ COPY --from=builder /root/lc0/build/release /root/lc0
 
 RUN echo $TZ > /etc/timezone && \
     apt-get update && \
-    apt-get install -y wget libgomp1 libprotobuf-dev libgoogle-perftools-dev && \
+    apt-get install -y wget python3-pip libgomp1 libprotobuf-dev libgoogle-perftools-dev && \
+    pip3 install --no-cache-dir gdown && \
     apt purge git -y && \
     apt autoclean
 
 WORKDIR /root/lc0
 
-RUN wget https://storage.lczero.org/files/networks-contrib/BT4-1024x15x32h-swa-6147500-policytune-332.pb.gz
+RUN gdown --id 1p5sdwA-vRExpY4l4XO-Kp4IjG4gruk4T -O BT4-tf13tune.pb.gz
 
 CMD [ "/root/lc0/./lc0", "--show-hidden" ]
