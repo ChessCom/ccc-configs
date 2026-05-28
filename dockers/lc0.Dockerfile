@@ -55,6 +55,6 @@ RUN echo $TZ > /etc/timezone && \
 
 WORKDIR /root/lc0
 
-RUN gdown --id 1p5sdwA-vRExpY4l4XO-Kp4IjG4gruk4T -O BT4-tf13tune.pb.gz
+RUN gdown 1p5sdwA-vRExpY4l4XO-Kp4IjG4gruk4T -O BT4-tf13tune.pb.gz
 
 CMD [ "/root/lc0/./lc0", "--show-hidden" ]
