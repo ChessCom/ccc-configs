@@ -27,6 +27,7 @@ ARG CACHE_BUST
 RUN git clone --branch dev https://github.com/JonathanHallstrom/pawnocchio && \
     cd pawnocchio && \
     git submodule update --init --depth 1 && \
+    make net && \
     zig build --release=fast install -Duse_numa=true
 
 CMD [ "./pawnocchio/zig-out/bin/pawnocchio" ]
