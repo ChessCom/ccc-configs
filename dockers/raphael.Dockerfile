@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt update && apt-get -y install git make cmake wget curl gcc g++ clang llvm lld
+RUN apt update && apt-get -y install git make cmake wget curl gcc g++ clang llvm lld libnuma-dev
 
 # ------------------------------------------------------------------------------
 
@@ -14,6 +14,6 @@ ARG CACHE_BUST
 # Clone and build from main
 RUN git clone --branch main --depth 1 https://github.com/Orbital-Web/Raphael && \
     cd Raphael && \
-    make -j EXE=raphael
+    make -j EXE=raphael NUMA=on
 
 CMD [ "./Raphael/raphael" ]
