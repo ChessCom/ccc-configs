@@ -41,6 +41,47 @@ def build_command(args, engine):
          + ' -t ccc-engines/%s' % (engine) \
          + ' -f ../dockers/%s.Dockerfile .' % (engine)
 
+def build_engine(args, engine):
+
+    # Single engine, so echo the output as well as saving it to the log file
+    with open('%s/%s.logs' % (LOG_PATH, engine), 'w') as log:
+
+        proc = subprocess.Popen(
+            build_command(args, engine),
+            shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            universal_newlines=True,
+        )
+
+        for line in proc.stdout:
+            sys.stdout.write(line)
+            sys.stdout.flush()
+            log.write(line)
+
+        proc.wait()
+
+    return proc.returncode
+
+def build_engines(args, engines):
+
+    # Many engines, so build them all at once, with the output going to the log files
+    builds = []
+    for engine in engines:
+        log = open('%s/%s.logs' % (LOG_PATH, engine), 'w')
+        proc = subprocess.Popen(
+            build_command(args, engine),
+            shell=True, stdout=log, stderr=subprocess.STDOUT,
+        )
+        builds.append((engine, proc, log))
+
+    returncodes = []
+    for engine, proc, log in builds:
+        proc.wait()
+        log.close()
+        returncodes.append(proc.returncode)
+
+    return returncodes
+
+
 def get_version(args, engine):
 
     cmd = ['docker run --cap-add=SYS_NICE --rm -i ccc-engines/%s' % (engine)]
@@ -128,19 +169,14 @@ if __name__ == '__main__':
         sys.exit()
 
     if not args.skip:
-        builds = []
-        for engine in args.engines:
-            log = open('%s/%s.logs' % (LOG_PATH, engine), 'w')
-            proc = subprocess.Popen(
-                build_command(args, engine),
-                shell=True, stdout=log, stderr=subprocess.STDOUT,
-            )
-            builds.append((engine, proc, log))
 
-        for engine, proc, log in builds:
-            proc.wait()
-            log.close()
-            if proc.returncode != 0:
+        if len(args.engines) == 1:
+            returncodes = [build_engine(args, args.engines[0])]
+        else:
+            returncodes = build_engines(args, args.engines)
+
+        for engine, returncode in zip(args.engines, returncodes):
+            if returncode != 0:
                 print ('Build failed for %s (see %s/%s.logs)' % (engine, LOG_PATH, engine))
                 continue
             version = get_version(args, engine)
