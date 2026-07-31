@@ -27,6 +27,6 @@ ARG CACHE_BUST
 # Clone and build from main
 RUN git clone --branch master https://github.com/tcheran-chess/tcheran && \
     cd tcheran && \
-    make -j
+    make -j EXE=tcheran
 
-CMD [ "./tcheran/Tcheran" ]
+CMD [ "./tcheran/tcheran" ]
