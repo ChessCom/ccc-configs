@@ -116,7 +116,11 @@ def get_version(args, engine):
     proc.stdin.flush()
     proc.wait()
 
-    return ' '.join(line.split()[3:])
+    # Most engines report "id name Name Version", but some use "id name Name-Version"
+    if not (version := ' '.join(line.split()[3:])):
+        version = line.split()[2].split('-', 1)[-1]
+
+    return version
 
 def edit_engine_version(engine_name, engine_version, webhook_secret):
 
