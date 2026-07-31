@@ -21,7 +21,7 @@ SCRIPT_BUILDER += '    --cap-add=SYS_NICE --network none --rm -i ccc-engines/%s'
 GPU_SCRIPT_BUILDER  = '#!/bin/bash\n'
 GPU_SCRIPT_BUILDER += 'docker run --gpus \'"device=0,1"\' \\\n'
 GPU_SCRIPT_BUILDER += '    -v /data/tablebases:/data/tablebases -v /data/engines/weights:/weights \\\n'
-GPU_SCRIPT_BUILDER += '    --runtime=nvidia --cap-add=SYS_NICE --network none --rm -i ccc-engines/%s'
+GPU_SCRIPT_BUILDER += '    --cap-add=SYS_NICE --network none --rm -i ccc-engines/%s'
 
 for filename in os.listdir(DOCKER_DIR):
 
