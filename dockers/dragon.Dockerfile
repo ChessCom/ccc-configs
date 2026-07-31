@@ -20,7 +20,7 @@ RUN git clone https://gitlab.com/libeigen/eigen.git && \
 # ------------------------------------------------------------------------------
 
 # Force the cache to break, using CACHE_BUST = $(date +%s)
-# ARG CACHE_BUST
+ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 
@@ -43,11 +43,16 @@ RUN --mount=type=secret,id=TORCHBENCH_USER \
        $(cat /run/secrets/TORCHBENCH_SITE)/api/networks/Dragon/$(cat /.default-net)/ \
        --output dragon.knn
 
+RUN ls -lh dragon.knn && sha256sum dragon.knn
+
 # Build from source, without embedding a Network file
 RUN --mount=type=secret,id=DRAGON_GIT_TOKEN \
     git clone https://$(cat /run/secrets/DRAGON_GIT_TOKEN)@github.com/ChessCom/komodo.git && \
     cd komodo && \
     ./build_dragon.sh --avx2 && \
     mv build_dragon/dragon ../dragon-avx2-popcnt
+
+# NOTE: The use of --avx2 instead of --avx512 is intentional. Builds are failing
+# for the --avx512 path.
 
 CMD [ "./dragon-avx2-popcnt" ]
