@@ -17,6 +17,10 @@ LOG_PATH = 'logs'
 def gather_secrets():
     return [f for f in os.listdir('../secrets') if not f.startswith('.')]
 
+def gather_engines():
+    return sorted(f[:-len('.Dockerfile')] for f in os.listdir('../dockers') if f.endswith('.Dockerfile'))
+
+
 def build_command(args, engine):
 
     if not os.path.exists('../dockers/%s.Dockerfile' % (engine)):
@@ -82,6 +86,17 @@ def build_engines(args, engines):
     return returncodes
 
 
+def sanitize_name(name):
+
+    lookup = {
+        'plentychess'   : 'PlentyChess',
+        'rofchade'      : 'RofChade',
+        'blackmarlin'   : 'BlackMarlin',
+        'pzchessbot'    : 'PZChessBot',
+    }
+
+    return lookup.get(name.lower(), name.capitalize())
+
 def get_version(args, engine):
 
     cmd = ['docker run --cap-add=SYS_NICE --rm -i ccc-engines/%s' % (engine)]
@@ -102,18 +117,6 @@ def get_version(args, engine):
     proc.wait()
 
     return ' '.join(line.split()[3:])
-
-
-def sanitize_name(name):
-
-    lookup = {
-        'plentychess'   : 'PlentyChess',
-        'rofchade'      : 'RofChade',
-        'blackmarlin'   : 'BlackMarlin',
-        'pzchessbot'    : 'PZChessBot',
-    }
-
-    return lookup.get(name.lower(), name.capitalize())
 
 def edit_engine_version(engine_name, engine_version, webhook_secret):
 
@@ -155,13 +158,20 @@ if __name__ == '__main__':
     os.makedirs(LOG_PATH, exist_ok=True)
 
     p = argparse.ArgumentParser()
-    p.add_argument('engines',   help='Engine Names', nargs='+')
+    p.add_argument('engines',   help='Engine Names', nargs='*')
+    p.add_argument('--all',     help='Build every engine in ../dockers/', action='store_true')
     p.add_argument('--dry',     help='Print build command only'       , action='store_true')
     p.add_argument('--skip',    help='Skip building entirely'         , action='store_true')
     p.add_argument('--sudo',    help='Run docker commands with sudo'  , action='store_true')
     p.add_argument('--verbose', help='Use plain progress Docker style', action='store_true')
     p.add_argument('--update',  help='Update engine version endpoint' , action='store_true')
     args = p.parse_args()
+
+    if args.all:
+        args.engines = gather_engines()
+
+    if not args.engines:
+        p.error('No engines given; provide Engine Names or use --all')
 
     if args.dry:
         for engine in args.engines:
