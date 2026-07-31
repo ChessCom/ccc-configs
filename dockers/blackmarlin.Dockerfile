@@ -31,11 +31,25 @@ ARG CACHE_BUST
 
 # ------------------------------------------------------------------------------
 
-# Clone and build from master
-RUN git clone https://github.com/jnlt3/blackmarlin && \
+# Download the Network, using GRANTNET_USER and GRANTNET_PASS secrets
+RUN --mount=type=secret,id=GRANTNET_USER \
+    --mount=type=secret,id=GRANTNET_PASS \
+    curl -X POST \
+       -F "username=$(cat /run/secrets/GRANTNET_USER)" \
+       -F "password=$(cat /run/secrets/GRANTNET_PASS)" \
+       https://chess.grantnet.us/api/networks/BlackMarlin/blackmarlin.bin/ --output default.bin
+
+RUN ls -l -h default.bin && sha256sum default.bin
+
+# Clone and build from master. The repo's LFS budget is exhausted, so skip the
+# smudge filter, and swap in the network we downloaded above for the pointer file
+RUN export GIT_LFS_SKIP_SMUDGE=1 && \
+    git clone https://github.com/jnlt3/blackmarlin && \
     cd blackmarlin && \
     git checkout main && \
     git pull && \
+    mv ../default.bin nn/default.bin && \
+    sha256sum nn/default.bin && \
     make -j
 
 CMD [ "./blackmarlin/BlackMarlin" ]
