@@ -11,6 +11,9 @@ import time
 import time
 
 
+LOG_PATH = 'logs'
+
+
 def gather_secrets():
     return [f for f in os.listdir('../secrets') if not f.startswith('.')]
 
@@ -108,7 +111,7 @@ if __name__ == '__main__':
     # Always working relative to this script
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-    os.makedirs('buildlogs', exist_ok=True)
+    os.makedirs(LOG_PATH, exist_ok=True)
 
     p = argparse.ArgumentParser()
     p.add_argument('engines',   help='Engine Names', nargs='+')
@@ -127,7 +130,7 @@ if __name__ == '__main__':
     if not args.skip:
         builds = []
         for engine in args.engines:
-            log = open('buildlogs/%s.logs' % (engine), 'w')
+            log = open('%s/%s.logs' % (LOG_PATH, engine), 'w')
             proc = subprocess.Popen(
                 build_command(args, engine),
                 shell=True, stdout=log, stderr=subprocess.STDOUT,
@@ -138,7 +141,7 @@ if __name__ == '__main__':
             proc.wait()
             log.close()
             if proc.returncode != 0:
-                print ('Build failed for %s (see buildlogs/%s.logs)' % (engine, engine))
+                print ('Build failed for %s (see %s/%s.logs)' % (engine, LOG_PATH, engine))
                 continue
             version = get_version(args, engine)
             print ('Built version %s for %s' % (version, engine))
