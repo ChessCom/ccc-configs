@@ -151,6 +151,16 @@ def tally_nps_from_log(log_path, stats):
             if nodes and time_ms:
                 pending[engine] = (int(nodes.group(1)), int(time_ms.group(1)))
 
+def print_table(headers, rows, indent='    '):
+    # Left align the first column, right align the numbers, and size every
+    # column to the widest cell that actually needs to fit in it
+    aligns = ['<'] + ['>'] * (len(headers) - 1)
+    widths = [max(len(row[idx]) for row in [headers] + rows) for idx in range(len(headers))]
+
+    for row in [headers] + rows:
+        cells = [f'{cell:{align}{width}}' for cell, align, width in zip(row, aligns, widths)]
+        print(indent + '  '.join(cells).rstrip())
+
 def report_nps_for_events(matching_events, all_game_numbers):
     for name, event_id in matching_events:
         game_nums = all_game_numbers.get(name, [])
@@ -175,12 +185,20 @@ def report_nps_for_events(matching_events, all_game_numbers):
         if not stats:
             continue
 
-        print(f'Average NPS for {name} (event {event_id}):')
+        rows = []
         for engine in sorted(stats, key=lambda x: -stats[x]['nodes']):
             tally = stats[engine]
             nps = tally['nodes'] * 1000 / tally['time'] if tally['time'] else 0
-            print('    %-24s nps=%15.1f nodes=%18d time=%12.1fs searches=%6d' % (
-                engine, nps, tally['nodes'], tally['time'] / 1000, tally['searches']))
+            rows.append([
+                engine,
+                f'{nps:,.0f}',
+                f"{tally['nodes']:,}",
+                f"{tally['time'] / 1000:,.1f}s",
+                f"{tally['searches']:,}",
+            ])
+
+        print(f'Average NPS for {name} (event {event_id}):')
+        print_table(['Engine', 'NPS', 'Nodes', 'Time', 'Searches'], rows)
         print()
 
 def download_pgn(websocket, game_nr, event_id):
