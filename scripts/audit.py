@@ -115,6 +115,74 @@ def check_log_file(log_path, game_nr, event_name, min_game_nr):
             for match in matches:
                 print(f'{game_nr} (game #%4d): {event_name}, {match.group()}' % event_game_num)
 
+ENGINE_OUTPUT_PATTERN = re.compile(r'^\[Engine\s*\] \[[\d:.]+\] <\s*\d*> (?:<stderr> )?(.+?) ---> (.*)$')
+NODES_PATTERN = re.compile(r'\bnodes (\d+)\b')
+TIME_PATTERN = re.compile(r'\btime (\d+)\b')
+
+def tally_nps_from_log(log_path, stats):
+    # For each engine, remember the last info line carrying both a node count and
+    # a time, then bank it once that engine reports its bestmove for the search
+    pending = {}
+
+    with open(log_path, 'r', errors='replace') as f:
+        for line in f:
+            match = ENGINE_OUTPUT_PATTERN.match(line.rstrip('\n'))
+            if not match:
+                continue
+
+            engine, output = match.group(1), match.group(2)
+
+            if output.startswith('bestmove'):
+                nodes, time_ms = pending.pop(engine, (None, None))
+                if nodes is None:
+                    continue
+
+                tally = stats.setdefault(engine, {'nodes': 0, 'time': 0, 'searches': 0})
+                tally['nodes'] += nodes
+                tally['time'] += time_ms
+                tally['searches'] += 1
+                continue
+
+            if not output.startswith('info ') or output.startswith('info string'):
+                continue
+
+            nodes = NODES_PATTERN.search(output)
+            time_ms = TIME_PATTERN.search(output)
+            if nodes and time_ms:
+                pending[engine] = (int(nodes.group(1)), int(time_ms.group(1)))
+
+def report_nps_for_events(matching_events, all_game_numbers):
+    for name, event_id in matching_events:
+        game_nums = all_game_numbers.get(name, [])
+        if not game_nums:
+            continue
+
+        logs_dir = os.path.join('logs', str(event_id))
+        if not os.path.exists(logs_dir):
+            continue
+
+        stats = {}
+        for game_nr in sorted([int(g) for g in game_nums]):
+            log_path = os.path.join(logs_dir, f'{game_nr}.log')
+            if not os.path.exists(log_path):
+                continue
+
+            try:
+                tally_nps_from_log(log_path, stats)
+            except Exception as error:
+                print(f'Failed to parse game #{game_nr}: {error}')
+
+        if not stats:
+            continue
+
+        print(f'Average NPS for {name} (event {event_id}):')
+        for engine in sorted(stats, key=lambda x: -stats[x]['nodes']):
+            tally = stats[engine]
+            nps = tally['nodes'] * 1000 / tally['time'] if tally['time'] else 0
+            print('    %-24s nps=%15.1f nodes=%18d time=%12.1fs searches=%6d' % (
+                engine, nps, tally['nodes'], tally['time'] / 1000, tally['searches']))
+        print()
+
 def download_pgn(websocket, game_nr, event_id):
     game_nr = int(game_nr)
     pgn_dir = os.path.join('pgn', str(event_id))
@@ -209,7 +277,7 @@ def print_all_messages(websocket):
         print(json.dumps(messages, indent=2))
         print()
 
-def process_events(websocket, pattern, download_logs=False, check_logs=False, download_pgns=False):
+def process_events(websocket, pattern, download_logs=False, check_logs=False, download_pgns=False, report_nps=False):
     request = {'type': 'requestEventsListUpdate'}
     send_request(websocket, request)
 
@@ -253,7 +321,12 @@ def process_events(websocket, pattern, download_logs=False, check_logs=False, do
         print()
         download_pgns_for_events(websocket, matching_events, all_game_numbers)
 
-def run(event_pattern=None, download_logs=False, check_logs=False, download_pgns=False, debug=False):
+    # Step 6: Report average NPS if requested
+    if report_nps:
+        print()
+        report_nps_for_events(matching_events, all_game_numbers)
+
+def run(event_pattern=None, download_logs=False, check_logs=False, download_pgns=False, report_nps=False, debug=False):
     global DEBUG
     DEBUG = debug
 
@@ -264,7 +337,7 @@ def run(event_pattern=None, download_logs=False, check_logs=False, download_pgns
             print_all_messages(websocket)
         else:
             pattern = re.compile(event_pattern)
-            process_events(websocket, pattern, download_logs, check_logs, download_pgns)
+            process_events(websocket, pattern, download_logs, check_logs, download_pgns, report_nps)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Utility to pull logs based on the CCC WebSocket')
@@ -272,7 +345,8 @@ if __name__ == '__main__':
     parser.add_argument('--logs', action='store_true', default=False, help='Download logs for matching events')
     parser.add_argument('--check', action='store_true', default=False, help='Check logs for issues')
     parser.add_argument('--pgn', action='store_true', default=False, help='Download PGNs for matching events')
+    parser.add_argument('--nps', action='store_true', default=False, help='Report average NPS per engine from logs')
     parser.add_argument('--debug', action='store_true', default=False, help='Print all WebSocket requests')
     args = parser.parse_args()
 
-    run(args.event, args.logs, args.check, args.pgn, args.debug)
+    run(args.event, args.logs, args.check, args.pgn, args.nps, args.debug)
