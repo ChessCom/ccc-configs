@@ -6,7 +6,7 @@ RUN apt update && apt-get -y install git make cmake wget curl gcc g++ clang llvm
 
 # ------------------------------------------------------------------------------
 
-ENV ZIG_VERSION=0.16.0
+ENV ZIG_VERSION=0.17.0
 ENV ZIG_ARCH=x86_64-linux
 ENV ZIG_HOME=/opt/zig
 ENV PATH=${ZIG_HOME}:${PATH}
@@ -26,7 +26,6 @@ ARG CACHE_BUST
 # Clone and build from dev
 RUN git clone --branch dev https://github.com/JonathanHallstrom/pawnocchio && \
     cd pawnocchio && \
-    git submodule update --init --depth 1 && \
     make net && \
     zig build --release=fast install -Duse_numa=true
 
