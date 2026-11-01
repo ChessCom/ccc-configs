@@ -1,0 +1,8 @@
+{
+  "command": "/data/engines/stockdory.sh",
+  "options": {
+    "Hash": 16384,
+    "Threads": 250
+  },
+  "timemargin": 1000
+}
