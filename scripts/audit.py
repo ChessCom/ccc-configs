@@ -284,6 +284,121 @@ def download_logs_for_events(matching_events, all_game_numbers):
 
         print()
 
+HEADER_PATTERN = re.compile(r'^\[(\w+)\s+"(.*)"\]\s*$')
+RESULT_SCORES = {'1-0': 1.0, '0-1': 0.0, '1/2-1/2': 0.5}
+
+def parse_pgn_text(text):
+    games = []
+    headers, movetext = {}, []
+
+    def flush():
+        if headers and movetext:
+            games.append((dict(headers), ' '.join(movetext)))
+
+    for line in text.splitlines():
+        match = HEADER_PATTERN.match(line.strip())
+        if match:
+            if movetext:
+                flush()
+                headers.clear()
+                movetext.clear()
+            headers[match.group(1)] = match.group(2)
+        elif headers and line.strip():
+            movetext.append(line.strip())
+
+    flush()
+    return games
+
+def pgn_files_from_paths(paths):
+    files = []
+    for path in paths:
+        if os.path.isdir(path):
+            for root, _, names in os.walk(path):
+                files.extend(os.path.join(root, name) for name in names if name.endswith('.pgn'))
+        else:
+            files.append(path)
+    return sorted(files)
+
+def opening_key(headers, movetext, plies):
+    # Strip comments, variations, NAGs, move numbers and results to leave SAN moves
+    movetext = re.sub(r'\{[^}]*\}|;[^\n]*|\([^)]*\)|\$\d+', ' ', movetext)
+    moves = [tok for tok in movetext.split() if tok not in RESULT_SCORES and tok != '*']
+    moves = [re.sub(r'^\d+\.+', '', tok) for tok in moves]
+    moves = [tok for tok in moves if tok]
+    return (headers.get('FEN', ''), tuple(moves[:plies]))
+
+def report_pentanomial(paths, plies):
+    # Group games by opening, then pair games with colours reversed between the same two engines
+    unpaired = {}
+    pairs = {}
+    total_games = 0
+
+    for path in pgn_files_from_paths(paths):
+        with open(path, 'r', errors='replace') as f:
+            games = parse_pgn_text(f.read())
+
+        for headers, movetext in games:
+            white, black = headers.get('White'), headers.get('Black')
+            score = RESULT_SCORES.get(headers.get('Result'))
+            if not white or not black or score is None:
+                continue
+
+            total_games += 1
+            key = (frozenset((white, black)), opening_key(headers, movetext, plies))
+            waiting = unpaired.setdefault(key, [])
+
+            # Look for the waiting game where the colours were the other way around
+            for idx, (other_white, _) in enumerate(waiting):
+                if other_white == black:
+                    _, other_score = waiting.pop(idx)
+                    # Score both games from the perspective of the other game's white player
+                    first, second = black, white
+                    total = other_score + (1.0 - score)
+                    pairs.setdefault((first, second), [0] * 5)[int(total * 2)] += 1
+                    break
+            else:
+                waiting.append((white, score))
+
+    leftover = sum(len(waiting) for waiting in unpaired.values())
+    engines = sorted({engine for pair in pairs for engine in pair})
+
+    # Normalise so that every pairing is available from both perspectives
+    results = {}
+    for (first, second), counts in pairs.items():
+        results.setdefault((first, second), [0] * 5)
+        results.setdefault((second, first), [0] * 5)
+        for idx, count in enumerate(counts):
+            results[(first, second)][idx] += count
+            results[(second, first)][4 - idx] += count
+
+    print(f'Parsed {total_games} games, {sum(sum(c) for c in pairs.values())} pairs, {leftover} unpaired')
+    if not engines:
+        return
+
+    print()
+    print('Pentanomial (row engine vs column engine): 0 / 0.5 / 1 / 1.5 / 2')
+    rows = []
+    for row in engines:
+        cells = [row]
+        for col in engines:
+            counts = results.get((row, col))
+            cells.append('/'.join(str(c) for c in counts) if counts else '-')
+        rows.append(cells)
+    print_table(['Engine'] + engines, rows, indent='')
+
+def report_pentanomial_for_events(matching_events, all_game_numbers, plies):
+    for name, event_id in matching_events:
+        if not all_game_numbers.get(name):
+            continue
+
+        pgn_dir = os.path.join('pgn', str(event_id))
+        if not os.path.exists(pgn_dir):
+            continue
+
+        print(f'Pentanomial for {name} (event {event_id}):')
+        report_pentanomial([pgn_dir], plies)
+        print()
+
 def print_all_messages(websocket):
     request = {'type': 'requestEventsListUpdate'}
     send_request(websocket, request)
@@ -295,7 +410,7 @@ def print_all_messages(websocket):
         print(json.dumps(messages, indent=2))
         print()
 
-def process_events(websocket, pattern, download_logs=False, check_logs=False, download_pgns=False, report_nps=False):
+def process_events(websocket, pattern, download_logs=False, check_logs=False, download_pgns=False, report_nps=False, report_penta=False, penta_plies=16):
     request = {'type': 'requestEventsListUpdate'}
     send_request(websocket, request)
 
@@ -344,7 +459,12 @@ def process_events(websocket, pattern, download_logs=False, check_logs=False, do
         print()
         report_nps_for_events(matching_events, all_game_numbers)
 
-def run(event_pattern=None, download_logs=False, check_logs=False, download_pgns=False, report_nps=False, debug=False):
+    # Step 7: Report pentanomial cross table if requested
+    if report_penta:
+        print()
+        report_pentanomial_for_events(matching_events, all_game_numbers, penta_plies)
+
+def run(event_pattern=None, download_logs=False, check_logs=False, download_pgns=False, report_nps=False, report_penta=False, penta_plies=16, debug=False):
     global DEBUG
     DEBUG = debug
 
@@ -355,7 +475,7 @@ def run(event_pattern=None, download_logs=False, check_logs=False, download_pgns
             print_all_messages(websocket)
         else:
             pattern = re.compile(event_pattern)
-            process_events(websocket, pattern, download_logs, check_logs, download_pgns, report_nps)
+            process_events(websocket, pattern, download_logs, check_logs, download_pgns, report_nps, report_penta, penta_plies)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Utility to pull logs based on the CCC WebSocket')
@@ -364,7 +484,12 @@ if __name__ == '__main__':
     parser.add_argument('--check', action='store_true', default=False, help='Check logs for issues')
     parser.add_argument('--pgn', action='store_true', default=False, help='Download PGNs for matching events')
     parser.add_argument('--nps', action='store_true', default=False, help='Report average NPS per engine from logs')
+    parser.add_argument('--penta', action='store_true', default=False, help='Report a pentanomial cross table from the PGNs (requires --pgn)')
+    parser.add_argument('--penta-plies', type=int, default=16, help='Plies that define an opening when pairing games (default 16)')
     parser.add_argument('--debug', action='store_true', default=False, help='Print all WebSocket requests')
     args = parser.parse_args()
 
-    run(args.event, args.logs, args.check, args.pgn, args.nps, args.debug)
+    if args.penta and not (args.event and args.pgn):
+        parser.error('--penta requires --event and --pgn')
+
+    run(args.event, args.logs, args.check, args.pgn, args.nps, args.penta, args.penta_plies, args.debug)
