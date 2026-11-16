@@ -10,7 +10,7 @@ RUN apt-get update && \
     add-apt-repository ppa:dotnet/backports && \
     apt-get update && \
     apt-get install -y \
-        dotnet-sdk-10.0
+        dotnet11
 
 # ------------------------------------------------------------------------------
 
