@@ -1,0 +1,9 @@
+{
+    "command": "/data/engines/fry.sh",
+    "timemargin": 1000,
+    "options": {
+        "SyzygyPath": "/data/tablebases",
+        "AdvanceThreads": "0",
+        "MoveOverhead": "200"
+    }
+}
