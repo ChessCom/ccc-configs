@@ -31,7 +31,7 @@ for filename in os.listdir(DOCKER_DIR):
     engine_name = filename.split('.Dockerfile')[0]
     wrapper_path = os.path.join(WRAPPER_DIR, f'{engine_name}.sh')
 
-    if engine_name == 'lc0':
+    if engine_name in ('lc0', 'fry'):
         content = GPU_SCRIPT_BUILDER % (engine_name)
     else:
         content = SCRIPT_BUILDER % (engine_name)
